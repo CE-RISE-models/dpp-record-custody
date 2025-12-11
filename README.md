@@ -1,6 +1,6 @@
 # CE-RISE DPP Record Custody
 
-[![DOI](https://zenodo.org/badge/DOI/TOBEOBTAINED.svg)](https://doi.org/TOBEOBTAINED) [![Schemas](https://img.shields.io/badge/Schema%20Files-LinkML%2C%20JSON%2C%20SHACL%2C%20OWL-32CD32)](https://ce-rise-models.codeberg.page/dpp-record-custody/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17900533.svg)](https://doi.org/10.5281/zenodo.17900533) [![Schemas](https://img.shields.io/badge/Schema%20Files-LinkML%2C%20JSON%2C%20SHACL%2C%20OWL-32CD32)](https://ce-rise-models.codeberg.page/dpp-record-custody/)
 
 Repository for the CE-RISE DPP Record Custody data model, part of the DPP Metadata Layer in the Digital Product Passport architecture. This model represents the complete chain of custody and governance history of the DPP record itself, tracking who did what when. It captures custody events (creation, update, transfer, archival), identifies custodians, records authorized transfers, includes cryptographic integrity evidence, and maintains comprehensive governance records. The model ensures forensic-level auditability, accountability, and secure lifecycle governance of the DPP as an information object, complementing the structural metadata (dpp-record-metadata) and operational governance (dpp-access-and-governance). All five stages are now fully implemented with industry-standard authentication (OIDC, OAuth2, SAML, DIDs) and comprehensive ontology support.
 
@@ -274,7 +274,4 @@ Attribution: CE-RISE project (Grant Agreement No. 101092281) and the individual 
   <img src="https://nilu.no/wp-content/uploads/2023/12/nilu-logo-seagreen-rgb-300px.png" alt="NILU logo" width="40"/>
 </a>
 
-Developed by NILU (Riccardo Boero — ribo@nilu.no) within the CE-RISE project.  
-
-
-
+Developed by NILU (Riccardo Boero — ribo@nilu.no) within the CE-RISE project.
