@@ -31,11 +31,13 @@ DPPRecordCustody (root)
 │   │   ├── EventDescription
 │   │   └── EventJustification (reason for the event)
 │   ├── EventActor
-│   │   ├── ActorID (unique identifier)
-│   │   ├── ActorName
+│   │   ├── ActorID (OpenID sub claim, OIDC identifier)
+│   │   ├── ActorName (from OIDC name/preferred_username claim)
+│   │   ├── ActorEmail (from OIDC email claim)
 │   │   ├── ActorRole (creator, editor, validator, custodian, auditor)
-│   │   ├── ActorOrganization
-│   │   └── ActorAuthentication (how actor was authenticated)
+│   │   ├── ActorOrganization (from OIDC org claim or SAML assertion)
+│   │   ├── ActorAuthentication (OAuth2, OIDC, SAML, X.509)
+│   │   └── ActorSessionID (JWT jti or session identifier)
 │   └── EventIntegrity
 │       ├── PreviousHash (hash of previous event for chain integrity)
 │       ├── CurrentHash (hash of current event data)
@@ -45,11 +47,12 @@ DPPRecordCustody (root)
 │
 ├── 2. CustodianHistory (multivalued)
 │   ├── CustodianIdentity
-│   │   ├── CustodianID
+│   │   ├── CustodianID (DID, OIDC sub, or LEI for organizations)
 │   │   ├── CustodianName
 │   │   ├── CustodianType (individual, organization, system)
-│   │   ├── CustodianContact
-│   │   └── CustodianJurisdiction
+│   │   ├── CustodianContact (vCard or Schema.org ContactPoint)
+│   │   ├── CustodianJurisdiction (ISO 3166 country code)
+│   │   └── CustodianCertifications (ISO 27001, SOC2, etc.)
 │   ├── CustodyPeriod
 │   │   ├── CustodyStartTime
 │   │   ├── CustodyEndTime
@@ -61,11 +64,12 @@ DPPRecordCustody (root)
 │
 ├── 3. TransferRecords (multivalued)
 │   ├── TransferAuthorization
-│   │   ├── AuthorizationID
-│   │   ├── AuthorizingParty
-│   │   ├── AuthorizationDocument (reference)
-│   │   ├── LegalBasis
-│   │   └── TransferConditions
+│   │   ├── AuthorizationID (UUID or system identifier)
+│   │   ├── AuthorizingParty (DID or OIDC identifier)
+│   │   ├── AuthorizationToken (OAuth2 token or signed JWT)
+│   │   ├── AuthorizationDocument (URI reference)
+│   │   ├── LegalBasis (GDPR Article 6/9, contract, consent)
+│   │   └── TransferConditions (smart contract or policy rules)
 │   ├── TransferDetails
 │   │   ├── TransferID
 │   │   ├── TransferTimestamp
@@ -85,15 +89,17 @@ DPPRecordCustody (root)
 │   │   ├── FingerprintScope (full record, specific fields)
 │   │   └── FingerprintTimestamp
 │   ├── BlockchainAnchoring (optional)
-│   │   ├── BlockchainNetwork
+│   │   ├── BlockchainNetwork (Ethereum, Polygon, Hyperledger)
 │   │   ├── TransactionHash
 │   │   ├── BlockNumber
-│   │   └── SmartContractAddress
+│   │   ├── SmartContractAddress
+│   │   └── DIDDocument (W3C DID for blockchain identity)
 │   └── ExternalAttestation
-│       ├── AttestationProvider
+│       ├── AttestationProvider (TSA, notary service, CA)
 │       ├── AttestationID
-│       ├── AttestationTimestamp
-│       └── AttestationProof
+│       ├── AttestationTimestamp (RFC 3161 timestamp)
+│       ├── AttestationProof (X.509 cert, VC, or signed statement)
+│       └── AttestationStandard (eIDAS, ETSI, RFC 3161)
 │
 └── 5. GovernanceActions
     ├── ValidationRecords
@@ -122,12 +128,12 @@ DPPRecordCustody (root)
 #### **Step 1: Custody Event Capture**
 Record every significant action on the DPP record:
 - **EventMetadata**: Unique ID, type, timestamp, description, justification
-- **EventActor**: Who performed the action with authentication details
+- **EventActor**: Who performed the action with OIDC/OAuth2 authentication, JWT session tracking
 - **EventIntegrity**: Cryptographic chain linking with hashes and optional signatures
 
 #### **Step 2: Custodian Management**
 Track all parties who have had custody of the data:
-- **CustodianIdentity**: Full identification of the responsible party
+- **CustodianIdentity**: Full identification using DIDs, OIDC, or LEI (Legal Entity Identifier)
 - **CustodyPeriod**: When they had custody with precise timestamps
 - **CustodyResponsibilities**: What they were authorized to do and compliance requirements
 
@@ -188,16 +194,36 @@ Every data point includes a `sql_identifier` annotation following the pattern:
 
 ### Integration Opportunities
 
+#### Authentication & Identity Standards
+- **OpenID Connect (OIDC)** - Industry standard for user authentication
+- **OAuth 2.0** - Authorization framework for API access
+- **W3C DIDs** - Decentralized Identifiers for self-sovereign identity
+- **SAML 2.0** - Enterprise single sign-on
+- **WebAuthn/FIDO2** - Passwordless authentication
+- **LEI (ISO 17442)** - Legal Entity Identifiers for organizations
+- **X.509 Certificates** - PKI-based authentication
+
+#### Provenance & Audit Ontologies
 - **W3C PROV-O** - Provenance Ontology for tracking entity derivation
 - **PREMIS** - Preservation metadata for digital objects
 - **Dublin Core** - Metadata terms for resource description
 - **FOAF** - Friend of a Friend for agent identification
-- **Time Ontology** - Temporal concepts and relations
-- **Verifiable Credentials** - W3C standard for tamper-proof claims
-- **EPCIS** - Events for supply chain visibility
+- **vCard** - Contact information standard
+- **Schema.org** - Structured data vocabulary
+
+#### Compliance & Standards
+- **ISO 27037** - Digital evidence chain of custody
 - **ISO 15489** - Records management standards
-- **Chain of Custody standards** - ISO 27037 for digital evidence
-- **Blockchain ontologies** - EthOn for Ethereum, BLONDiE for distributed ledgers
+- **RFC 3161** - Time-stamp protocol
+- **eIDAS** - EU electronic identification and trust services
+- **GDPR Articles** - Legal basis references
+- **Verifiable Credentials** - W3C standard for tamper-proof claims
+
+#### Blockchain & Integrity
+- **EthOn** - Ethereum Ontology
+- **BLONDiE** - Blockchain Ontology with Dynamic Extensibility
+- **EPCIS** - Events for supply chain visibility
+- **Time Ontology** - Temporal concepts and relations
 
 
 
