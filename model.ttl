@@ -1,0 +1,2720 @@
+@prefix cert: <http://www.w3.org/ns/auth/cert#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix did: <https://www.w3.org/ns/did#> .
+@prefix dprc: <https://ce-rise-models.codeberg.page/dpp-record-custody/> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix oauth: <https://www.w3.org/ns/auth/oauth#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix oidc: <http://openid.net/specs/openid-connect-core-1_0#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sec: <https://w3id.org/security#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix vc: <https://www.w3.org/2018/credentials#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ce-rise-models.codeberg.page/dpp-record-custody/.owl.ttl> a owl:Ontology ;
+    rdfs:label "dpp_record_custody" ;
+    dcterms:license "CC BY-NC 4.0" ;
+    dcterms:title "CE-RISE DPP Record Custody Data Model" ;
+    pav:version "0.0.1" ;
+    skos:definition """Chain of custody and governance history of DPP records, capturing who did what when. Stage 1 focuses on Custody Events tracking with full audit trail capabilities.
+""" .
+
+dprc:AuditRecord a owl:Class ;
+    rdfs:label "AuditRecord" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom dprc:AuditTypeEnum ;
+            owl:onProperty dprc:audit_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:audit_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:audit_findings ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:audit_recommendations ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:compliance_status ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:audit_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:audit_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:audit_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:auditor ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:auditor ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:auditor ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:audit_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:audit_type ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:audit_findings ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:audit_recommendations ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:compliance_status ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:audit_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:compliance_status ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:audit_id ] ;
+    skos:definition "Record of an audit performed on the DPP custody chain" ;
+    skos:exactMatch prov:Revision ;
+    skos:inScheme dprc: .
+
+dprc:BlockchainAnchoring a owl:Class ;
+    rdfs:label "BlockchainAnchoring" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:smart_contract_address ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:confirmation_count ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:block_number ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:did_document ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:blockchain_network ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transaction_hash ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:transaction_hash ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:blockchain_network ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:integer ;
+            owl:onProperty dprc:block_number ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:smart_contract_address ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:transaction_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:BlockchainNetworkEnum ;
+            owl:onProperty dprc:blockchain_network ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:integer ;
+            owl:onProperty dprc:confirmation_count ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:anchor_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:did_document ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:did_document ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:anchor_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:anchor_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:block_number ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:confirmation_count ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:smart_contract_address ] ;
+    skos:definition "Blockchain-based immutability anchoring" ;
+    skos:exactMatch dprc:BlockchainAnchor ;
+    skos:inScheme dprc: .
+
+dprc:CustodianIdentity a owl:Class ;
+    rdfs:label "CustodianIdentity" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_type ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_lei ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_did ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodianTypeEnum ;
+            owl:onProperty dprc:custodian_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:custodian_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_contact ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_jurisdiction ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_jurisdiction ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_certifications ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_contact ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_did ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_lei ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_lei ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_did ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_certifications ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:custodian_name ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:custodian_jurisdiction ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_contact ] ;
+    skos:definition "Complete identification of a custodian entity" ;
+    skos:exactMatch prov:Agent ;
+    skos:inScheme dprc: .
+
+dprc:CustodianRecord a owl:Class ;
+    rdfs:label "CustodianRecord" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodyResponsibilities ;
+            owl:onProperty dprc:custody_responsibilities ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custodian_identity ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_period ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodianIdentity ;
+            owl:onProperty dprc:custodian_identity ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodyPeriod ;
+            owl:onProperty dprc:custody_period ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_responsibilities ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_identity ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_responsibilities ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_period ] ;
+    skos:definition """Record of a specific custodian's period of responsibility for the DPP record, including their identity, custody period, and responsibilities
+""" ;
+    skos:exactMatch prov:Delegation ;
+    skos:inScheme dprc: .
+
+dprc:CustodyEvent a owl:Class ;
+    rdfs:label "CustodyEvent" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_actor ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:EventIntegrity ;
+            owl:onProperty dprc:event_integrity ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_metadata ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_integrity ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_metadata ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:EventMetadata ;
+            owl:onProperty dprc:event_metadata ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_actor ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_integrity ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:EventActor ;
+            owl:onProperty dprc:event_actor ] ;
+    skos:definition """A significant action or change in the DPP record's custody chain, capturing who did what, when, and with what authority
+""" ;
+    skos:exactMatch prov:Activity ;
+    skos:inScheme dprc: .
+
+dprc:CustodyPeriod a owl:Class ;
+    rdfs:label "CustodyPeriod" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:custody_start_time ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_duration_days ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:integer ;
+            owl:onProperty dprc:custody_duration_days ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:custody_end_time ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_active ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_active ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_start_time ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:custody_start_time ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_end_time ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:custody_end_time ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:boolean ;
+            owl:onProperty dprc:custody_active ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_duration_days ] ;
+    skos:definition "Time period during which custody was held" ;
+    skos:exactMatch time:Interval ;
+    skos:inScheme dprc: .
+
+dprc:CustodyResponsibilities a owl:Class ;
+    rdfs:label "CustodyResponsibilities" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:compliance_obligations ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:boolean ;
+            owl:onProperty dprc:delegation_allowed ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:delegation_allowed ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:access_granted ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:access_granted ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:data_stewardship ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:modification_rights ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:modification_rights ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:modification_rights ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:delegation_allowed ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:compliance_obligations ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:data_stewardship ] ;
+    skos:definition "Responsibilities and permissions held during custody" ;
+    skos:exactMatch odrl:Policy ;
+    skos:inScheme dprc: .
+
+dprc:DPPRecordCustody a owl:Class ;
+    rdfs:label "DPPRecordCustody" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_records ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custody_events ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:TransferRecord ;
+            owl:onProperty dprc:transfer_records ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:integrity_evidence ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodyEvent ;
+            owl:onProperty dprc:custody_events ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:governance_actions ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:IntegrityEvidence ;
+            owl:onProperty dprc:integrity_evidence ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:governance_actions ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:CustodianRecord ;
+            owl:onProperty dprc:custodian_history ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:GovernanceActions ;
+            owl:onProperty dprc:governance_actions ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:integrity_evidence ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:custodian_history ] ;
+    skos:definition """Root class for the chain of custody and governance history of DPP records. Full implementation includes all five stages: Custody Events, Custodian History, Transfer Records, Integrity Evidence, and Governance Actions.
+""" ;
+    skos:exactMatch dprc:DPPRecordCustody ;
+    skos:inScheme dprc: .
+
+dprc:DataFingerprint a owl:Class ;
+    rdfs:label "DataFingerprint" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:fingerprint_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:canonical_form ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:fingerprint_algorithm ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:fingerprint_scope ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:fingerprint_algorithm ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:fingerprint_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:fingerprint_value ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:fingerprint_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:fingerprint_value ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:HashAlgorithmEnum ;
+            owl:onProperty dprc:fingerprint_algorithm ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:fingerprint_value ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:canonical_form ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:fingerprint_scope ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:canonical_form ] ;
+    skos:definition "Cryptographic fingerprint of DPP data at a specific point" ;
+    skos:exactMatch sec:Digest ;
+    skos:inScheme dprc: .
+
+dprc:DisposalRecord a owl:Class ;
+    rdfs:label "DisposalRecord" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:legal_hold_status ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:disposal_authorization ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_method ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:disposal_verification ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:retention_exception ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_verification ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:legal_hold_status ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_reason ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:disposal_verification ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:disposal_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:retention_exception ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:disposal_reason ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_authorization ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:disposal_reason ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:disposal_authorization ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:disposal_method ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:boolean ;
+            owl:onProperty dprc:legal_hold_status ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:DisposalMethodEnum ;
+            owl:onProperty dprc:disposal_method ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:disposal_timestamp ] ;
+    skos:definition "Record of DPP data disposal when applicable" ;
+    skos:exactMatch prov:Invalidation ;
+    skos:inScheme dprc: .
+
+dprc:EventActor a owl:Class ;
+    rdfs:label "EventActor" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_user_agent ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_ip_address ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_organization ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_session_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_ip_address ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_session_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_user_agent ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_email ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_email ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:AuthenticationMethodEnum ;
+            owl:onProperty dprc:actor_authentication ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_authentication ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_session_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:actor_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_user_agent ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_role ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_role ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_authentication ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:actor_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_organization ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_email ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:actor_organization ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:ActorRoleEnum ;
+            owl:onProperty dprc:actor_role ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:actor_ip_address ] ;
+    skos:definition "The authenticated agent who performed the custody event" ;
+    skos:exactMatch prov:Agent ;
+    skos:inScheme dprc: .
+
+dprc:EventIntegrity a owl:Class ;
+    rdfs:label "EventIntegrity" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:current_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:merkle_root ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:previous_hash ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:merkle_root ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:HashAlgorithmEnum ;
+            owl:onProperty dprc:hash_algorithm ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:previous_hash ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:signature_algorithm ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:signing_key_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:nonce ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:hash_algorithm ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:hash_algorithm ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:digital_signature ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:nonce ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:signature_algorithm ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:nonce ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:digital_signature ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:signing_key_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:previous_hash ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:current_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:current_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:SignatureAlgorithmEnum ;
+            owl:onProperty dprc:signature_algorithm ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:merkle_root ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:signing_key_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:digital_signature ] ;
+    skos:definition "Cryptographic integrity and chaining information for custody events" ;
+    skos:exactMatch sec:Proof ;
+    skos:inScheme dprc: .
+
+dprc:EventMetadata a owl:Class ;
+    rdfs:label "EventMetadata" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_justification ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_justification ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:event_description ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:event_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_type ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:event_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_description ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:event_type ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:EventTypeEnum ;
+            owl:onProperty dprc:event_type ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_source_system ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:event_justification ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:event_source_system ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:event_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_description ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:event_source_system ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:event_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:event_id ] ;
+    skos:definition "Core identifying and descriptive information about a custody event" ;
+    skos:exactMatch prov:Plan ;
+    skos:inScheme dprc: .
+
+dprc:ExternalAttestation a owl:Class ;
+    rdfs:label "ExternalAttestation" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:attestation_proof ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:AttestationStandardEnum ;
+            owl:onProperty dprc:attestation_standard ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:attestation_proof ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:attestation_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:attestation_validity ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:attestation_provider ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:attestation_standard ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_standard ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_revocable ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:attestation_revocable ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_proof ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:attestation_provider ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:attestation_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:attestation_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:boolean ;
+            owl:onProperty dprc:attestation_revocable ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:attestation_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_provider ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:attestation_validity ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:attestation_validity ] ;
+    skos:definition "Third-party attestation or notarization service" ;
+    skos:exactMatch vc:VerifiableCredential ;
+    skos:inScheme dprc: .
+
+dprc:GovernanceActions a owl:Class ;
+    rdfs:label "GovernanceActions" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:validation_records ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:DisposalRecord ;
+            owl:onProperty dprc:disposal_record ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:AuditRecord ;
+            owl:onProperty dprc:audit_trail ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:audit_trail ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:disposal_record ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:ValidationRecord ;
+            owl:onProperty dprc:validation_records ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:disposal_record ] ;
+    skos:definition """Governance activities including validations, audits, and disposal actions taken on the DPP record
+""" ;
+    skos:exactMatch prov:Generation ;
+    skos:inScheme dprc: .
+
+dprc:IntegrityEvidence a owl:Class ;
+    rdfs:label "IntegrityEvidence" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:blockchain_anchoring ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:data_fingerprint ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:blockchain_anchoring ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:ExternalAttestation ;
+            owl:onProperty dprc:external_attestation ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:BlockchainAnchoring ;
+            owl:onProperty dprc:blockchain_anchoring ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:data_fingerprint ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:DataFingerprint ;
+            owl:onProperty dprc:data_fingerprint ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:external_attestation ] ;
+    skos:definition """Comprehensive cryptographic and external evidence maintaining the integrity and authenticity of the DPP record
+""" ;
+    skos:exactMatch sec:Proof ;
+    skos:inScheme dprc: .
+
+dprc:TransferAuthorization a owl:Class ;
+    rdfs:label "TransferAuthorization" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom xsd:anyURI ;
+            owl:onProperty dprc:authorization_document ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:authorization_document ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:legal_basis ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:authorization_expiry ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:authorization_expiry ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:transfer_conditions ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:authorization_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:authorization_token ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:authorizing_party ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:authorization_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_conditions ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:legal_basis ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:authorizing_party ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:authorization_token ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:authorization_expiry ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:authorization_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:authorization_document ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:legal_basis ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:authorizing_party ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:authorization_token ] ;
+    skos:definition "Authorization and legal basis for custody transfer" ;
+    skos:exactMatch odrl:Agreement ;
+    skos:inScheme dprc: .
+
+dprc:TransferDetails a owl:Class ;
+    rdfs:label "TransferDetails" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:transfer_reason ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_method ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:from_custodian ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:data_scope ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:to_custodian ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_reason ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_reason ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:to_custodian ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:transfer_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:data_scope ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:from_custodian ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:transfer_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:from_custodian ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:to_custodian ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_method ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:TransferMethodEnum ;
+            owl:onProperty dprc:transfer_method ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:transfer_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:transfer_id ] ;
+    skos:definition "Execution details of the custody transfer" ;
+    skos:exactMatch prov:Activity ;
+    skos:inScheme dprc: .
+
+dprc:TransferRecord a owl:Class ;
+    rdfs:label "TransferRecord" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_details ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:TransferDetails ;
+            owl:onProperty dprc:transfer_details ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_verification ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_verification ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:TransferAuthorization ;
+            owl:onProperty dprc:transfer_authorization ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_details ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:TransferVerification ;
+            owl:onProperty dprc:transfer_verification ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:transfer_authorization ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:transfer_authorization ] ;
+    skos:definition """Complete record of a custody transfer between parties, including authorization, details, and verification
+""" ;
+    skos:exactMatch prov:Influence ;
+    skos:inScheme dprc: .
+
+dprc:TransferVerification a owl:Class ;
+    rdfs:label "TransferVerification" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:verification_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:verifier_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:verification_method ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verifier_id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verification_method ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:verification_evidence ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verification_hash ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:verification_timestamp ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:verification_result ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:VerificationResultEnum ;
+            owl:onProperty dprc:verification_result ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:verification_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verification_evidence ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verification_result ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:verifier_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:VerificationMethodEnum ;
+            owl:onProperty dprc:verification_method ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:verification_evidence ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:verification_hash ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:verification_timestamp ] ;
+    skos:definition "Verification and confirmation of successful transfer" ;
+    skos:exactMatch prov:Validation ;
+    skos:inScheme dprc: .
+
+dprc:ValidationRecord a owl:Class ;
+    rdfs:label "ValidationRecord" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom dprc:ValidationTypeEnum ;
+            owl:onProperty dprc:validation_type ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validation_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:validation_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:validator ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validation_outcome ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:validation_schema ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validation_schema ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:validation_errors ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:validation_id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom dprc:ValidationOutcomeEnum ;
+            owl:onProperty dprc:validation_outcome ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:validation_outcome ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:dateTime ;
+            owl:onProperty dprc:validation_timestamp ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validation_timestamp ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty dprc:validation_schema ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validator ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty dprc:validation_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:validation_id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:validator ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty dprc:validation_errors ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty dprc:validation_type ] ;
+    skos:definition "Record of a validation performed on the DPP data" ;
+    skos:exactMatch prov:Validation ;
+    skos:inScheme dprc: .
+
+oidc:Authentication a owl:Class ;
+    rdfs:label "OIDC" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "OpenID Connect authentication" .
+
+cert:X509 a owl:Class ;
+    rdfs:label "X509" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "X.509 certificate standard" .
+
+cert:X509Certificate a owl:Class ;
+    rdfs:label "X509" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "X.509 certificate authentication" .
+
+dcat:DataService a owl:Class ;
+    rdfs:label "API" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "API-based transfer" .
+
+dcat:access a owl:Class ;
+    rdfs:label "ACCESS" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Access to view the record" .
+
+prov:Administrator a owl:Class ;
+    rdfs:label "ADMINISTRATOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "System administrator" .
+
+prov:Audit a owl:Class ;
+    rdfs:label "AUDIT" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Audit event on the record" .
+
+prov:Auditor a owl:Class ;
+    rdfs:label "AUDITOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Auditor reviewing the record" .
+
+prov:AutomatedValidation a owl:Class ;
+    rdfs:label "AUTOMATED" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Automated system verification" .
+
+prov:BusinessValidation a owl:Class ;
+    rdfs:label "BUSINESS_RULES" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Business rules validation" .
+
+prov:CompletenessValidation a owl:Class ;
+    rdfs:label "COMPLETENESS" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Data completeness validation" .
+
+prov:ConsistencyValidation a owl:Class ;
+    rdfs:label "CONSISTENCY" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Data consistency validation" .
+
+prov:Create a owl:Class ;
+    rdfs:label "CREATION" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Initial creation of the DPP record" .
+
+prov:Creator a owl:Class ;
+    rdfs:label "CREATOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Original creator of the record" .
+
+prov:Custodian a owl:Class ;
+    rdfs:label "CUSTODIAN" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Current custodian of the record" .
+
+prov:Deletion a owl:Class ;
+    rdfs:label "DELETION" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum ;
+    skos:definition "Simple deletion from storage" .
+
+prov:DirectTransfer a owl:Class ;
+    rdfs:label "DIRECT" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "Direct peer-to-peer transfer" .
+
+prov:Editor a owl:Class ;
+    rdfs:label "EDITOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Editor with modification rights" .
+
+prov:ExternalAudit a owl:Class ;
+    rdfs:label "EXTERNAL" ;
+    rdfs:subClassOf dprc:AuditTypeEnum ;
+    skos:definition "External third-party audit" .
+
+prov:ExternalValidation a owl:Class ;
+    rdfs:label "THIRD_PARTY" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Third-party verification service" .
+
+prov:Fail a owl:Class ;
+    rdfs:label "FAIL" ;
+    rdfs:subClassOf dprc:ValidationOutcomeEnum ;
+    skos:definition "Validation failed" .
+
+prov:Failure a owl:Class ;
+    rdfs:label "FAILURE" ;
+    rdfs:subClassOf dprc:VerificationResultEnum ;
+    skos:definition "Transfer verification failed" .
+
+prov:InternalAudit a owl:Class ;
+    rdfs:label "INTERNAL" ;
+    rdfs:subClassOf dprc:AuditTypeEnum ;
+    skos:definition "Internal audit" .
+
+prov:ManualActivity a owl:Class ;
+    rdfs:label "MANUAL" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "Manual transfer process" .
+
+prov:ManualValidation a owl:Class ;
+    rdfs:label "MANUAL_REVIEW" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Manual verification" .
+
+prov:Modify a owl:Class ;
+    rdfs:label "UPDATE" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Modification of DPP record content" .
+
+prov:Observer a owl:Class ;
+    rdfs:label "VIEWER" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Read-only viewer" .
+
+prov:PartialSuccess a owl:Class ;
+    rdfs:label "PARTIAL" ;
+    rdfs:subClassOf dprc:VerificationResultEnum ;
+    skos:definition "Partial verification success" .
+
+prov:Pass a owl:Class ;
+    rdfs:label "PASS" ;
+    rdfs:subClassOf dprc:ValidationOutcomeEnum ;
+    skos:definition "Validation passed" .
+
+prov:Pending a owl:Class ;
+    rdfs:label "PENDING" ;
+    rdfs:subClassOf dprc:VerificationResultEnum ;
+    skos:definition "Verification still pending" .
+
+prov:PerformanceAudit a owl:Class ;
+    rdfs:label "PERFORMANCE" ;
+    rdfs:subClassOf dprc:AuditTypeEnum ;
+    skos:definition "Performance audit" .
+
+prov:Restoration a owl:Class ;
+    rdfs:label "RESTORATION" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Restoration from archive or backup" .
+
+prov:SchemaValidation a owl:Class ;
+    rdfs:label "SCHEMA" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Schema validation" .
+
+prov:Skipped a owl:Class ;
+    rdfs:label "SKIPPED" ;
+    rdfs:subClassOf dprc:ValidationOutcomeEnum ;
+    skos:definition "Validation was skipped" .
+
+prov:SoftwareAgent a owl:Class ;
+    rdfs:label "SYSTEM" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Automated system or service" .
+
+prov:Success a owl:Class ;
+    rdfs:label "SUCCESS" ;
+    rdfs:subClassOf dprc:VerificationResultEnum ;
+    skos:definition "Transfer verified successfully" .
+
+prov:Timeout a owl:Class ;
+    rdfs:label "TIMEOUT" ;
+    rdfs:subClassOf dprc:VerificationResultEnum ;
+    skos:definition "Verification timed out" .
+
+prov:Validator a owl:Class ;
+    rdfs:label "VALIDATOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum ;
+    skos:definition "Validator or verifier" .
+
+prov:Warning a owl:Class ;
+    rdfs:label "WARNING" ;
+    rdfs:subClassOf dprc:ValidationOutcomeEnum ;
+    skos:definition "Validation passed with warnings" .
+
+foaf:Organization a owl:Class ;
+    rdfs:label "ORGANIZATION" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Organization or company" .
+
+foaf:Person a owl:Class ;
+    rdfs:label "INDIVIDUAL" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Individual person" .
+
+dprc:ANSIX962 a owl:Class ;
+    rdfs:label "ANSI_X962" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "ANSI X9.62 standard" .
+
+dprc:Arweave a owl:Class ;
+    rdfs:label "ARWEAVE" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Arweave permanent storage" .
+
+dprc:Avalanche a owl:Class ;
+    rdfs:label "AVALANCHE" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Avalanche network" .
+
+dprc:Bitcoin a owl:Class ;
+    rdfs:label "BITCOIN" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Bitcoin network" .
+
+dprc:BlockchainTransfer a owl:Class ;
+    rdfs:label "BLOCKCHAIN" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "Blockchain-based transfer" .
+
+dprc:BlockchainVerification a owl:Class ;
+    rdfs:label "BLOCKCHAIN" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Blockchain confirmation" .
+
+dprc:ConsensusVerification a owl:Class ;
+    rdfs:label "MULTI_PARTY" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Multi-party consensus" .
+
+dprc:ETSI a owl:Class ;
+    rdfs:label "ETSI" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "ETSI standards" .
+
+dprc:EscrowTransfer a owl:Class ;
+    rdfs:label "ESCROW" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "Via escrow service" .
+
+dprc:Ethereum a owl:Class ;
+    rdfs:label "ETHEREUM" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Ethereum mainnet" .
+
+dprc:Hedera a owl:Class ;
+    rdfs:label "HEDERA" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Hedera Hashgraph" .
+
+dprc:Hyperledger a owl:Class ;
+    rdfs:label "HYPERLEDGER" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Hyperledger Fabric" .
+
+dprc:IPFS a owl:Class ;
+    rdfs:label "IPFS" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "IPFS network" .
+
+dprc:ISO27001 a owl:Class ;
+    rdfs:label "ISO27001" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "ISO 27001 certification" .
+
+dprc:Partner a owl:Class ;
+    rdfs:label "PARTNER" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Business partner" .
+
+dprc:Polygon a owl:Class ;
+    rdfs:label "POLYGON" ;
+    rdfs:subClassOf dprc:BlockchainNetworkEnum ;
+    skos:definition "Polygon network" .
+
+dprc:RFC3161 a owl:Class ;
+    rdfs:label "RFC3161" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "RFC 3161 Time-Stamp Protocol" .
+
+dprc:SmartContractTransfer a owl:Class ;
+    rdfs:label "SMART_CONTRACT" ;
+    rdfs:subClassOf dprc:TransferMethodEnum ;
+    skos:definition "Smart contract execution" .
+
+dprc:Vendor a owl:Class ;
+    rdfs:label "VENDOR" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Third-party vendor" .
+
+dprc:access_granted a owl:DatatypeProperty ;
+    rdfs:label "access_granted" ;
+    skos:definition "Permissions and access rights during custody" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:permission" ;
+    dprc:sql_identifier "dprc_access_granted" .
+
+dprc:audit_findings a owl:DatatypeProperty ;
+    rdfs:label "audit_findings" ;
+    skos:definition "Findings from the audit" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:value" ;
+    dprc:sql_identifier "dprc_audit_findings" .
+
+dprc:audit_recommendations a owl:DatatypeProperty ;
+    rdfs:label "audit_recommendations" ;
+    skos:definition "Recommendations from the audit" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:audit_recommendations" ;
+    dprc:sql_identifier "dprc_audit_recommendations" .
+
+dprc:audit_trail a owl:ObjectProperty ;
+    rdfs:label "audit_trail" ;
+    skos:definition "Complete audit trail of governance reviews" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:qualifiedRevision" ;
+    dprc:sql_identifier "dprc_audit_trail" .
+
+dprc:compliance_obligations a owl:DatatypeProperty ;
+    rdfs:label "compliance_obligations" ;
+    skos:definition "Regulatory and compliance requirements" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dpv:hasComplianceRequirement" ;
+    dprc:sql_identifier "dprc_compliance_obligations" .
+
+dprc:custodian_certifications a owl:DatatypeProperty ;
+    rdfs:label "custodian_certifications" ;
+    skos:definition "Security certifications held (ISO 27001, SOC2, etc.)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "cert:hasCertificate" ;
+    dprc:sql_identifier "dprc_custodian_certifications" .
+
+dprc:custodian_history a owl:ObjectProperty ;
+    rdfs:label "custodian_history" ;
+    skos:definition "Historical record of all custodians who have held the DPP record" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadDelegate" ;
+    dprc:sql_identifier "dprc_custodian_history" .
+
+dprc:custody_events a owl:ObjectProperty ;
+    rdfs:label "custody_events" ;
+    skos:definition "Chronological list of all custody-related events" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadActivity" ;
+    dprc:sql_identifier "dprc_custody_events" .
+
+dprc:data_scope a owl:DatatypeProperty ;
+    rdfs:label "data_scope" ;
+    skos:definition "What data was transferred" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:entity" ;
+    dprc:sql_identifier "dprc_data_scope" .
+
+dprc:data_stewardship a owl:DatatypeProperty ;
+    rdfs:label "data_stewardship" ;
+    skos:definition "What data the custodian was responsible for" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:target" ;
+    dprc:sql_identifier "dprc_data_stewardship" .
+
+dprc:eIDAS a owl:Class ;
+    rdfs:label "EIDAS" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "EU eIDAS regulation" .
+
+dprc:external_attestation a owl:ObjectProperty ;
+    rdfs:label "external_attestation" ;
+    skos:definition "Third-party attestation services" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:hasCredential" ;
+    dprc:sql_identifier "dprc_external_attestation" .
+
+dprc:fingerprint_scope a owl:DatatypeProperty ;
+    rdfs:label "fingerprint_scope" ;
+    skos:definition "What data is included in the fingerprint" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:fingerprint_scope" ;
+    dprc:sql_identifier "dprc_fingerprint_scope" .
+
+dprc:retention_exception a owl:DatatypeProperty ;
+    rdfs:label "retention_exception" ;
+    skos:definition "Any data retained despite disposal" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:retention_exception" ;
+    dprc:sql_identifier "dprc_retention_exception" .
+
+dprc:transfer_conditions a owl:DatatypeProperty ;
+    rdfs:label "transfer_conditions" ;
+    skos:definition "Conditions or restrictions on the transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:constraint" ;
+    dprc:sql_identifier "dprc_transfer_conditions" .
+
+dprc:transfer_records a owl:ObjectProperty ;
+    rdfs:label "transfer_records" ;
+    skos:definition "Records of all authorized transfers between custodians" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasInfluencedBy" ;
+    dprc:sql_identifier "dprc_transfer_records" .
+
+dprc:validation_errors a owl:DatatypeProperty ;
+    rdfs:label "validation_errors" ;
+    skos:definition "List of errors if validation failed" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:validation_errors" ;
+    dprc:sql_identifier "dprc_validation_errors" .
+
+dprc:validation_records a owl:ObjectProperty ;
+    rdfs:label "validation_records" ;
+    skos:definition "Records of all validation activities" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:validation_records" ;
+    dprc:sql_identifier "dprc_validation_records" .
+
+dpv:Anonymisation a owl:Class ;
+    rdfs:label "ANONYMIZATION" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum ;
+    skos:definition "Remove identifying information" .
+
+dpv:ComplianceValidation a owl:Class ;
+    rdfs:label "REGULATORY" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Regulatory compliance validation" .
+
+dpv:DataAggregation a owl:Class ;
+    rdfs:label "AGGREGATION" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum ;
+    skos:definition "Aggregate into summary statistics" .
+
+dpv:Pseudonymisation a owl:Class ;
+    rdfs:label "PSEUDONYMIZATION" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum ;
+    skos:definition "Replace identifying information" .
+
+dpv:Regulator a owl:Class ;
+    rdfs:label "REGULATOR" ;
+    rdfs:subClassOf dprc:CustodianTypeEnum ;
+    skos:definition "Regulatory body" .
+
+dpv:RegulatoryAudit a owl:Class ;
+    rdfs:label "REGULATORY" ;
+    rdfs:subClassOf dprc:AuditTypeEnum ;
+    skos:definition "Regulatory compliance audit" .
+
+sec:APIKey a owl:Class ;
+    rdfs:label "API_KEY" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "API key authentication" .
+
+sec:BLAKE2b a owl:Class ;
+    rdfs:label "BLAKE2B" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "BLAKE2b hash algorithm" .
+
+sec:BLAKE3 a owl:Class ;
+    rdfs:label "BLAKE3" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "BLAKE3 hash algorithm" .
+
+sec:EcdsaSha256 a owl:Class ;
+    rdfs:label "ECDSA_SHA256" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "ECDSA with SHA-256" .
+
+sec:EcdsaSha512 a owl:Class ;
+    rdfs:label "ECDSA_SHA512" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "ECDSA with SHA-512" .
+
+sec:Ed25519 a owl:Class ;
+    rdfs:label "ED25519" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "EdDSA with Ed25519" .
+
+sec:IntegrityValidation a owl:Class ;
+    rdfs:label "INTEGRITY" ;
+    rdfs:subClassOf dprc:ValidationTypeEnum ;
+    skos:definition "Data integrity validation" .
+
+sec:JsonWebToken a owl:Class ;
+    rdfs:label "JWT" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "JSON Web Token authentication" .
+
+sec:Kerberos a owl:Class ;
+    rdfs:label "KERBEROS" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "Kerberos authentication" .
+
+sec:RsaPss a owl:Class ;
+    rdfs:label "RSA_PSS" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "RSA-PSS signature" .
+
+sec:RsaSha256 a owl:Class ;
+    rdfs:label "RSA_SHA256" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "RSA with SHA-256" .
+
+sec:RsaSha512 a owl:Class ;
+    rdfs:label "RSA_SHA512" ;
+    rdfs:subClassOf dprc:SignatureAlgorithmEnum ;
+    skos:definition "RSA with SHA-512" .
+
+sec:SAML a owl:Class ;
+    rdfs:label "SAML" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "SAML 2.0 authentication" .
+
+sec:SHA256 a owl:Class ;
+    rdfs:label "SHA256" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "SHA-256 hash algorithm" .
+
+sec:SHA384 a owl:Class ;
+    rdfs:label "SHA384" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "SHA-384 hash algorithm" .
+
+sec:SHA3_256 a owl:Class ;
+    rdfs:label "SHA3_256" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "SHA3-256 hash algorithm" .
+
+sec:SHA3_512 a owl:Class ;
+    rdfs:label "SHA3_512" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "SHA3-512 hash algorithm" .
+
+sec:SHA512 a owl:Class ;
+    rdfs:label "SHA512" ;
+    rdfs:subClassOf dprc:HashAlgorithmEnum ;
+    skos:definition "SHA-512 hash algorithm" .
+
+sec:SecureDeletion a owl:Class ;
+    rdfs:label "SECURE_DELETION" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum ;
+    skos:definition "Cryptographic secure deletion" .
+
+sec:SecurityAudit a owl:Class ;
+    rdfs:label "SECURITY" ;
+    rdfs:subClassOf dprc:AuditTypeEnum ;
+    skos:definition "Security audit" .
+
+sec:Verification a owl:Class ;
+    rdfs:label "CRYPTOGRAPHIC" ;
+    rdfs:subClassOf dprc:VerificationMethodEnum ;
+    skos:definition "Cryptographic verification" .
+
+sec:WebAuthn a owl:Class ;
+    rdfs:label "WEBAUTHN" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "WebAuthn/FIDO2 authentication" .
+
+oauth:OAuth2 a owl:Class ;
+    rdfs:label "OAUTH2" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "OAuth 2.0 authentication" .
+
+did:Authentication a owl:Class ;
+    rdfs:label "DID" ;
+    rdfs:subClassOf dprc:AuthenticationMethodEnum ;
+    skos:definition "Decentralized Identifier authentication" .
+
+prov:Delegation a owl:Class ;
+    rdfs:label "TRANSFER" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Transfer of custody to another party" .
+
+prov:Invalidation a owl:Class ;
+    rdfs:label "DISPOSAL" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Disposal or deletion of the record" .
+
+dprc:actor_authentication a owl:ObjectProperty ;
+    rdfs:label "actor_authentication" ;
+    skos:definition "How the actor was authenticated" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:authenticationMethod" ;
+    dprc:sql_identifier "dprc_actor_authentication" .
+
+dprc:actor_email a owl:DatatypeProperty ;
+    rdfs:label "actor_email" ;
+    skos:definition "Email address (from OIDC email claim)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "foaf:mbox" ;
+    dprc:sql_identifier "dprc_actor_email" .
+
+dprc:actor_id a owl:DatatypeProperty ;
+    rdfs:label "actor_id" ;
+    skos:definition "Unique identifier (OpenID sub claim, DID, or system ID)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "oidc:sub" ;
+    dprc:sql_identifier "dprc_actor_id" .
+
+dprc:actor_ip_address a owl:DatatypeProperty ;
+    rdfs:label "actor_ip_address" ;
+    skos:definition "IP address of the actor for audit purposes" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:actor_ip_address" ;
+    dprc:sql_identifier "dprc_actor_ip_address" .
+
+dprc:actor_name a owl:DatatypeProperty ;
+    rdfs:label "actor_name" ;
+    skos:definition "Name of the actor (from OIDC name/preferred_username claim)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "foaf:name" ;
+    dprc:sql_identifier "dprc_actor_name" .
+
+dprc:actor_organization a owl:DatatypeProperty ;
+    rdfs:label "actor_organization" ;
+    skos:definition "Organization the actor represents (from OIDC org claim or SAML)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "foaf:member" ;
+    dprc:sql_identifier "dprc_actor_organization" .
+
+dprc:actor_role a owl:ObjectProperty ;
+    rdfs:label "actor_role" ;
+    skos:definition "Role of the actor in the custody chain" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadRole" ;
+    dprc:sql_identifier "dprc_actor_role" .
+
+dprc:actor_session_id a owl:DatatypeProperty ;
+    rdfs:label "actor_session_id" ;
+    skos:definition "Session identifier (JWT jti claim or session ID)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "oidc:jti" ;
+    dprc:sql_identifier "dprc_actor_session_id" .
+
+dprc:actor_user_agent a owl:DatatypeProperty ;
+    rdfs:label "actor_user_agent" ;
+    skos:definition "User agent string for forensic analysis" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:actor_user_agent" ;
+    dprc:sql_identifier "dprc_actor_user_agent" .
+
+dprc:anchor_timestamp a owl:DatatypeProperty ;
+    rdfs:label "anchor_timestamp" ;
+    skos:definition "When anchored to blockchain (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_anchor_timestamp" .
+
+dprc:attestation_id a owl:DatatypeProperty ;
+    rdfs:label "attestation_id" ;
+    skos:definition "Unique identifier for the attestation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_attestation_id" .
+
+dprc:attestation_proof a owl:DatatypeProperty ;
+    rdfs:label "attestation_proof" ;
+    skos:definition "X.509 cert, VC, or signed statement" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:proof" ;
+    dprc:sql_identifier "dprc_attestation_proof" .
+
+dprc:attestation_provider a owl:DatatypeProperty ;
+    rdfs:label "attestation_provider" ;
+    skos:definition "Provider of attestation (TSA, notary service, CA)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:issuer" ;
+    dprc:sql_identifier "dprc_attestation_provider" .
+
+dprc:attestation_revocable a owl:DatatypeProperty ;
+    rdfs:label "attestation_revocable" ;
+    skos:definition "Whether attestation can be revoked" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:credentialStatus" ;
+    dprc:sql_identifier "dprc_attestation_revocable" .
+
+dprc:attestation_standard a owl:ObjectProperty ;
+    rdfs:label "attestation_standard" ;
+    skos:definition "Standard used (eIDAS, ETSI, RFC 3161)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:conformsTo" ;
+    dprc:sql_identifier "dprc_attestation_standard" .
+
+dprc:attestation_timestamp a owl:DatatypeProperty ;
+    rdfs:label "attestation_timestamp" ;
+    skos:definition "RFC 3161 timestamp or attestation time" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:issuanceDate" ;
+    dprc:sql_identifier "dprc_attestation_timestamp" .
+
+dprc:attestation_validity a owl:DatatypeProperty ;
+    rdfs:label "attestation_validity" ;
+    skos:definition "Validity period of the attestation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "vc:expirationDate" ;
+    dprc:sql_identifier "dprc_attestation_validity" .
+
+dprc:audit_id a owl:DatatypeProperty ;
+    rdfs:label "audit_id" ;
+    skos:definition "Unique identifier for the audit" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_audit_id" .
+
+dprc:audit_timestamp a owl:DatatypeProperty ;
+    rdfs:label "audit_timestamp" ;
+    skos:definition "When audit was performed (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_audit_timestamp" .
+
+dprc:audit_type a owl:ObjectProperty ;
+    rdfs:label "audit_type" ;
+    skos:definition "Type of audit performed" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:type" ;
+    dprc:sql_identifier "dprc_audit_type" .
+
+dprc:auditor a owl:DatatypeProperty ;
+    rdfs:label "auditor" ;
+    skos:definition "Auditor performing the review" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasAssociatedWith" ;
+    dprc:sql_identifier "dprc_auditor" .
+
+dprc:authorization_document a owl:DatatypeProperty ;
+    rdfs:label "authorization_document" ;
+    skos:definition "URI reference to authorization document" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:source" ;
+    dprc:sql_identifier "dprc_authorization_document" .
+
+dprc:authorization_expiry a owl:DatatypeProperty ;
+    rdfs:label "authorization_expiry" ;
+    skos:definition "When the authorization expires" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:dateTime" ;
+    dprc:sql_identifier "dprc_authorization_expiry" .
+
+dprc:authorization_id a owl:DatatypeProperty ;
+    rdfs:label "authorization_id" ;
+    skos:definition "Unique identifier for the authorization" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_authorization_id" .
+
+dprc:authorization_token a owl:DatatypeProperty ;
+    rdfs:label "authorization_token" ;
+    skos:definition "OAuth2 token or signed JWT for authorization" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "oauth:accessToken" ;
+    dprc:sql_identifier "dprc_authorization_token" .
+
+dprc:authorizing_party a owl:DatatypeProperty ;
+    rdfs:label "authorizing_party" ;
+    skos:definition "Party who authorized the transfer (DID or OIDC identifier)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:assigner" ;
+    dprc:sql_identifier "dprc_authorizing_party" .
+
+dprc:block_number a owl:DatatypeProperty ;
+    rdfs:label "block_number" ;
+    skos:definition "Block number containing the transaction" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:block_number" ;
+    dprc:sql_identifier "dprc_block_number" .
+
+dprc:blockchain_anchoring a owl:ObjectProperty ;
+    rdfs:label "blockchain_anchoring" ;
+    skos:definition "Optional blockchain anchoring for immutability" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:blockchain_anchoring" ;
+    dprc:sql_identifier "dprc_blockchain_anchoring" .
+
+dprc:blockchain_network a owl:ObjectProperty ;
+    rdfs:label "blockchain_network" ;
+    skos:definition "Which blockchain network is used" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:blockchain_network" ;
+    dprc:sql_identifier "dprc_blockchain_network" .
+
+dprc:canonical_form a owl:DatatypeProperty ;
+    rdfs:label "canonical_form" ;
+    skos:definition "Canonical form used before hashing" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:canonical_form" ;
+    dprc:sql_identifier "dprc_canonical_form" .
+
+dprc:compliance_status a owl:DatatypeProperty ;
+    rdfs:label "compliance_status" ;
+    skos:definition "Compliance status determined by audit" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dpv:hasComplianceStatus" ;
+    dprc:sql_identifier "dprc_compliance_status" .
+
+dprc:confirmation_count a owl:DatatypeProperty ;
+    rdfs:label "confirmation_count" ;
+    skos:definition "Number of blockchain confirmations" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:confirmation_count" ;
+    dprc:sql_identifier "dprc_confirmation_count" .
+
+dprc:current_hash a owl:DatatypeProperty ;
+    rdfs:label "current_hash" ;
+    skos:definition "Hash of the current event data" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:proofValue" ;
+    dprc:sql_identifier "dprc_current_hash" .
+
+dprc:custodian_contact a owl:DatatypeProperty ;
+    rdfs:label "custodian_contact" ;
+    skos:definition "Contact information (vCard or Schema.org ContactPoint)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "schema:contactPoint" ;
+    dprc:sql_identifier "dprc_custodian_contact" .
+
+dprc:custodian_did a owl:DatatypeProperty ;
+    rdfs:label "custodian_did" ;
+    skos:definition "Decentralized Identifier if applicable" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "did:id" ;
+    dprc:sql_identifier "dprc_custodian_did" .
+
+dprc:custodian_id a owl:DatatypeProperty ;
+    rdfs:label "custodian_id" ;
+    skos:definition "Unique identifier (DID, OIDC sub, LEI for organizations)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_custodian_id" .
+
+dprc:custodian_identity a owl:ObjectProperty ;
+    rdfs:label "custodian_identity" ;
+    skos:definition "Full identification details of the custodian" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:agent" ;
+    dprc:sql_identifier "dprc_custodian_identity" .
+
+dprc:custodian_jurisdiction a owl:DatatypeProperty ;
+    rdfs:label "custodian_jurisdiction" ;
+    skos:definition "Legal jurisdiction (ISO 3166 country code)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dpv:hasJurisdiction" ;
+    dprc:sql_identifier "dprc_custodian_jurisdiction" .
+
+dprc:custodian_lei a owl:DatatypeProperty ;
+    rdfs:label "custodian_lei" ;
+    skos:definition "Legal Entity Identifier if applicable (ISO 17442)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:legal_entity_identifier" ;
+    dprc:sql_identifier "dprc_custodian_lei" .
+
+dprc:custodian_name a owl:DatatypeProperty ;
+    rdfs:label "custodian_name" ;
+    skos:definition "Name of the custodian" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "foaf:name" ;
+    dprc:sql_identifier "dprc_custodian_name" .
+
+dprc:custodian_type a owl:ObjectProperty ;
+    rdfs:label "custodian_type" ;
+    skos:definition "Type of custodian entity" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:type" ;
+    dprc:sql_identifier "dprc_custodian_type" .
+
+dprc:custody_active a owl:DatatypeProperty ;
+    rdfs:label "custody_active" ;
+    skos:definition "Whether this custodian is currently active" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:custody_active" ;
+    dprc:sql_identifier "dprc_custody_active" .
+
+dprc:custody_duration_days a owl:DatatypeProperty ;
+    rdfs:label "custody_duration_days" ;
+    skos:definition "Calculated duration of custody in days" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "time:hasDurationDescription" ;
+    dprc:sql_identifier "dprc_custody_duration_days" .
+
+dprc:custody_end_time a owl:DatatypeProperty ;
+    rdfs:label "custody_end_time" ;
+    skos:definition "When custody ended (ISO 8601), null if current" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "time:hasEnd" ;
+    dprc:sql_identifier "dprc_custody_end_time" .
+
+dprc:custody_period a owl:ObjectProperty ;
+    rdfs:label "custody_period" ;
+    skos:definition "Time period during which this custodian held the record" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:custody_period" ;
+    dprc:sql_identifier "dprc_custody_period" .
+
+dprc:custody_responsibilities a owl:ObjectProperty ;
+    rdfs:label "custody_responsibilities" ;
+    skos:definition "Responsibilities and permissions during custody" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:hasPolicy" ;
+    dprc:sql_identifier "dprc_custody_responsibilities" .
+
+dprc:custody_start_time a owl:DatatypeProperty ;
+    rdfs:label "custody_start_time" ;
+    skos:definition "When custody began (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "time:hasBeginning" ;
+    dprc:sql_identifier "dprc_custody_start_time" .
+
+dprc:data_fingerprint a owl:ObjectProperty ;
+    rdfs:label "data_fingerprint" ;
+    skos:definition "Cryptographic fingerprint of the data" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:hasDigest" ;
+    dprc:sql_identifier "dprc_data_fingerprint" .
+
+dprc:delegation_allowed a owl:DatatypeProperty ;
+    rdfs:label "delegation_allowed" ;
+    skos:definition "Whether custodian could delegate to others" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:delegation" ;
+    dprc:sql_identifier "dprc_delegation_allowed" .
+
+dprc:did_document a owl:DatatypeProperty ;
+    rdfs:label "did_document" ;
+    skos:definition "W3C DID document for blockchain identity" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "did:didDocument" ;
+    dprc:sql_identifier "dprc_did_document" .
+
+dprc:digital_signature a owl:DatatypeProperty ;
+    rdfs:label "digital_signature" ;
+    skos:definition "Optional digital signature of the event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:signatureValue" ;
+    dprc:sql_identifier "dprc_digital_signature" .
+
+dprc:disposal_authorization a owl:DatatypeProperty ;
+    rdfs:label "disposal_authorization" ;
+    skos:definition "Authorization for disposal" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadPlan" ;
+    dprc:sql_identifier "dprc_disposal_authorization" .
+
+dprc:disposal_method a owl:ObjectProperty ;
+    rdfs:label "disposal_method" ;
+    skos:definition "Method used for disposal" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:used" ;
+    dprc:sql_identifier "dprc_disposal_method" .
+
+dprc:disposal_reason a owl:DatatypeProperty ;
+    rdfs:label "disposal_reason" ;
+    skos:definition "Reason for disposal" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dpv:hasPurpose" ;
+    dprc:sql_identifier "dprc_disposal_reason" .
+
+dprc:disposal_record a owl:ObjectProperty ;
+    rdfs:label "disposal_record" ;
+    skos:definition "Record of data disposal when applicable" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:qualifiedInvalidation" ;
+    dprc:sql_identifier "dprc_disposal_record" .
+
+dprc:disposal_timestamp a owl:DatatypeProperty ;
+    rdfs:label "disposal_timestamp" ;
+    skos:definition "When disposal occurred (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_disposal_timestamp" .
+
+dprc:disposal_verification a owl:DatatypeProperty ;
+    rdfs:label "disposal_verification" ;
+    skos:definition "Verification that disposal was complete" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:value" ;
+    dprc:sql_identifier "dprc_disposal_verification" .
+
+dprc:event_actor a owl:ObjectProperty ;
+    rdfs:label "event_actor" ;
+    skos:definition "The agent who performed this custody event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasAssociatedWith" ;
+    dprc:sql_identifier "dprc_event_actor" .
+
+dprc:event_description a owl:DatatypeProperty ;
+    rdfs:label "event_description" ;
+    skos:definition "Human-readable description of what happened" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:description" ;
+    dprc:sql_identifier "dprc_event_description" .
+
+dprc:event_id a owl:DatatypeProperty ;
+    rdfs:label "event_id" ;
+    skos:definition "Unique identifier for this custody event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_event_id" .
+
+dprc:event_integrity a owl:ObjectProperty ;
+    rdfs:label "event_integrity" ;
+    skos:definition "Cryptographic integrity information for the event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:proof" ;
+    dprc:sql_identifier "dprc_event_integrity" .
+
+dprc:event_justification a owl:DatatypeProperty ;
+    rdfs:label "event_justification" ;
+    skos:definition "Reason or authorization for this event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:event_justification" ;
+    dprc:sql_identifier "dprc_event_justification" .
+
+dprc:event_metadata a owl:ObjectProperty ;
+    rdfs:label "event_metadata" ;
+    skos:definition "Core metadata about the custody event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:event_metadata" ;
+    dprc:sql_identifier "dprc_event_metadata" .
+
+dprc:event_source_system a owl:DatatypeProperty ;
+    rdfs:label "event_source_system" ;
+    skos:definition "System that generated this event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasGeneratedBy" ;
+    dprc:sql_identifier "dprc_event_source_system" .
+
+dprc:event_timestamp a owl:DatatypeProperty ;
+    rdfs:label "event_timestamp" ;
+    skos:definition "When the event occurred (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_event_timestamp" .
+
+dprc:event_type a owl:ObjectProperty ;
+    rdfs:label "event_type" ;
+    skos:definition "Type of custody event" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:type" ;
+    dprc:sql_identifier "dprc_event_type" .
+
+dprc:fingerprint_algorithm a owl:ObjectProperty ;
+    rdfs:label "fingerprint_algorithm" ;
+    skos:definition "Algorithm used for fingerprinting" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:digestAlgorithm" ;
+    dprc:sql_identifier "dprc_fingerprint_algorithm" .
+
+dprc:fingerprint_timestamp a owl:DatatypeProperty ;
+    rdfs:label "fingerprint_timestamp" ;
+    skos:definition "When the fingerprint was created (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_fingerprint_timestamp" .
+
+dprc:fingerprint_value a owl:DatatypeProperty ;
+    rdfs:label "fingerprint_value" ;
+    skos:definition "The hash value of the data" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:digestValue" ;
+    dprc:sql_identifier "dprc_fingerprint_value" .
+
+dprc:from_custodian a owl:DatatypeProperty ;
+    rdfs:label "from_custodian" ;
+    skos:definition "Custodian transferring custody" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasStartedBy" ;
+    dprc:sql_identifier "dprc_from_custodian" .
+
+dprc:governance_actions a owl:ObjectProperty ;
+    rdfs:label "governance_actions" ;
+    skos:definition "Validation, audit, and disposal records for governance" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:qualifiedGeneration" ;
+    dprc:sql_identifier "dprc_governance_actions" .
+
+dprc:hash_algorithm a owl:ObjectProperty ;
+    rdfs:label "hash_algorithm" ;
+    skos:definition "Algorithm used for hashing" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:digestAlgorithm" ;
+    dprc:sql_identifier "dprc_hash_algorithm" .
+
+dprc:integrity_evidence a owl:ObjectProperty ;
+    rdfs:label "integrity_evidence" ;
+    skos:definition "Cryptographic and external evidence of data integrity" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:hasProof" ;
+    dprc:sql_identifier "dprc_integrity_evidence" .
+
+dprc:legal_basis a owl:DatatypeProperty ;
+    rdfs:label "legal_basis" ;
+    skos:definition "Legal basis for transfer (GDPR Article 6/9, contract, consent)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dpv:hasLegalBasis" ;
+    dprc:sql_identifier "dprc_legal_basis" .
+
+dprc:legal_hold_status a owl:DatatypeProperty ;
+    rdfs:label "legal_hold_status" ;
+    skos:definition "Whether legal hold was checked" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:legal_hold_status" ;
+    dprc:sql_identifier "dprc_legal_hold_status" .
+
+dprc:merkle_root a owl:DatatypeProperty ;
+    rdfs:label "merkle_root" ;
+    skos:definition "Merkle tree root if event is part of batch" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:merkle_root" ;
+    dprc:sql_identifier "dprc_merkle_root" .
+
+dprc:modification_rights a owl:DatatypeProperty ;
+    rdfs:label "modification_rights" ;
+    skos:definition "Rights to modify the record" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "odrl:modify" ;
+    dprc:sql_identifier "dprc_modification_rights" .
+
+dprc:nonce a owl:DatatypeProperty ;
+    rdfs:label "nonce" ;
+    skos:definition "Nonce value for preventing replay attacks" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:nonce" ;
+    dprc:sql_identifier "dprc_nonce" .
+
+dprc:previous_hash a owl:DatatypeProperty ;
+    rdfs:label "previous_hash" ;
+    skos:definition "Hash of the previous event for chain integrity" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:previousProof" ;
+    dprc:sql_identifier "dprc_previous_hash" .
+
+dprc:signature_algorithm a owl:ObjectProperty ;
+    rdfs:label "signature_algorithm" ;
+    skos:definition "Algorithm used for digital signature" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:signatureAlgorithm" ;
+    dprc:sql_identifier "dprc_signature_algorithm" .
+
+dprc:signing_key_id a owl:DatatypeProperty ;
+    rdfs:label "signing_key_id" ;
+    skos:definition "Identifier of the key used for signing" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:verificationMethod" ;
+    dprc:sql_identifier "dprc_signing_key_id" .
+
+dprc:smart_contract_address a owl:DatatypeProperty ;
+    rdfs:label "smart_contract_address" ;
+    skos:definition "Smart contract address if applicable" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:smart_contract_address" ;
+    dprc:sql_identifier "dprc_smart_contract_address" .
+
+dprc:to_custodian a owl:DatatypeProperty ;
+    rdfs:label "to_custodian" ;
+    skos:definition "Custodian receiving custody" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasEndedBy" ;
+    dprc:sql_identifier "dprc_to_custodian" .
+
+dprc:transaction_hash a owl:DatatypeProperty ;
+    rdfs:label "transaction_hash" ;
+    skos:definition "Transaction hash on the blockchain" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:transaction_hash" ;
+    dprc:sql_identifier "dprc_transaction_hash" .
+
+dprc:transfer_authorization a owl:ObjectProperty ;
+    rdfs:label "transfer_authorization" ;
+    skos:definition "Authorization details for the transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadPlan" ;
+    dprc:sql_identifier "dprc_transfer_authorization" .
+
+dprc:transfer_details a owl:ObjectProperty ;
+    rdfs:label "transfer_details" ;
+    skos:definition "Specific details of the transfer execution" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:qualifiedInfluence" ;
+    dprc:sql_identifier "dprc_transfer_details" .
+
+dprc:transfer_id a owl:DatatypeProperty ;
+    rdfs:label "transfer_id" ;
+    skos:definition "Unique identifier for the transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_transfer_id" .
+
+dprc:transfer_method a owl:ObjectProperty ;
+    rdfs:label "transfer_method" ;
+    skos:definition "Method used for transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:used" ;
+    dprc:sql_identifier "dprc_transfer_method" .
+
+dprc:transfer_reason a owl:DatatypeProperty ;
+    rdfs:label "transfer_reason" ;
+    skos:definition "Reason for the transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:transfer_reason" ;
+    dprc:sql_identifier "dprc_transfer_reason" .
+
+dprc:transfer_timestamp a owl:DatatypeProperty ;
+    rdfs:label "transfer_timestamp" ;
+    skos:definition "When the transfer occurred (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_transfer_timestamp" .
+
+dprc:transfer_verification a owl:ObjectProperty ;
+    rdfs:label "transfer_verification" ;
+    skos:definition "Verification that transfer was completed successfully" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:qualifiedAssociation" ;
+    dprc:sql_identifier "dprc_transfer_verification" .
+
+dprc:validation_id a owl:DatatypeProperty ;
+    rdfs:label "validation_id" ;
+    skos:definition "Unique identifier for the validation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:identifier" ;
+    dprc:sql_identifier "dprc_validation_id" .
+
+dprc:validation_outcome a owl:ObjectProperty ;
+    rdfs:label "validation_outcome" ;
+    skos:definition "Result of the validation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:validation_outcome" ;
+    dprc:sql_identifier "dprc_validation_outcome" .
+
+dprc:validation_schema a owl:DatatypeProperty ;
+    rdfs:label "validation_schema" ;
+    skos:definition "Schema or rules used for validation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:conformsTo" ;
+    dprc:sql_identifier "dprc_validation_schema" .
+
+dprc:validation_timestamp a owl:DatatypeProperty ;
+    rdfs:label "validation_timestamp" ;
+    skos:definition "When validation was performed (ISO 8601)" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_validation_timestamp" .
+
+dprc:validation_type a owl:ObjectProperty ;
+    rdfs:label "validation_type" ;
+    skos:definition "Type of validation performed" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dcterms:type" ;
+    dprc:sql_identifier "dprc_validation_type" .
+
+dprc:validator a owl:DatatypeProperty ;
+    rdfs:label "validator" ;
+    skos:definition "Person or system performing validation" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasAssociatedWith" ;
+    dprc:sql_identifier "dprc_validator" .
+
+dprc:verification_evidence a owl:DatatypeProperty ;
+    rdfs:label "verification_evidence" ;
+    skos:definition "Evidence supporting the verification" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:value" ;
+    dprc:sql_identifier "dprc_verification_evidence" .
+
+dprc:verification_hash a owl:DatatypeProperty ;
+    rdfs:label "verification_hash" ;
+    skos:definition "Hash of transferred data for integrity" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "sec:digestValue" ;
+    dprc:sql_identifier "dprc_verification_hash" .
+
+dprc:verification_method a owl:ObjectProperty ;
+    rdfs:label "verification_method" ;
+    skos:definition "Method used to verify the transfer" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:hadPlan" ;
+    dprc:sql_identifier "dprc_verification_method" .
+
+dprc:verification_result a owl:ObjectProperty ;
+    rdfs:label "verification_result" ;
+    skos:definition "Result of the verification" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "dprc:verification_result" ;
+    dprc:sql_identifier "dprc_verification_result" .
+
+dprc:verification_timestamp a owl:DatatypeProperty ;
+    rdfs:label "verification_timestamp" ;
+    skos:definition "When verification was completed" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:atTime" ;
+    dprc:sql_identifier "dprc_verification_timestamp" .
+
+dprc:verifier_id a owl:DatatypeProperty ;
+    rdfs:label "verifier_id" ;
+    skos:definition "Identity of the verifying party" ;
+    skos:inScheme dprc: ;
+    dprc:owl.filler "prov:wasAssociatedWith" ;
+    dprc:sql_identifier "dprc_verifier_id" .
+
+vc:VerifiableCredential a owl:Class ;
+    rdfs:label "W3C_VC" ;
+    rdfs:subClassOf dprc:AttestationStandardEnum ;
+    skos:definition "W3C Verifiable Credentials" .
+
+prov:Archive a owl:Class ;
+    rdfs:label "ARCHIVAL" ;
+    rdfs:subClassOf dprc:DisposalMethodEnum,
+        dprc:EventTypeEnum ;
+    skos:definition "Archival of the record",
+        "Move to long-term archive" .
+
+prov:Migration a owl:Class ;
+    rdfs:label "MIGRATION" ;
+    rdfs:subClassOf dprc:EventTypeEnum,
+        dprc:TransferMethodEnum ;
+    skos:definition "Migration to new system or format",
+        "System migration transfer" .
+
+prov:Validation a owl:Class ;
+    rdfs:label "VALIDATION" ;
+    rdfs:subClassOf dprc:EventTypeEnum ;
+    skos:definition "Validation or verification of the record" .
+
+dpv:Authority a owl:Class ;
+    rdfs:label "GOVERNMENT",
+        "REGULATOR" ;
+    rdfs:subClassOf dprc:ActorRoleEnum,
+        dprc:CustodianTypeEnum ;
+    skos:definition "Government entity",
+        "Regulatory authority" .
+
+dprc:ValidationOutcomeEnum a owl:Class ;
+    rdfs:label "ValidationOutcomeEnum" ;
+    owl:unionOf ( prov:Pass prov:Fail prov:Warning prov:Skipped ) ;
+    skos:definition "Possible validation outcomes" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:Fail,
+        prov:Pass,
+        prov:Skipped,
+        prov:Warning .
+
+dprc:AuditTypeEnum a owl:Class ;
+    rdfs:label "AuditTypeEnum" ;
+    owl:unionOf ( prov:InternalAudit prov:ExternalAudit dpv:RegulatoryAudit sec:SecurityAudit prov:PerformanceAudit ) ;
+    skos:definition "Types of audits performed" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:ExternalAudit,
+        prov:InternalAudit,
+        prov:PerformanceAudit,
+        dpv:RegulatoryAudit,
+        sec:SecurityAudit .
+
+dprc:VerificationResultEnum a owl:Class ;
+    rdfs:label "VerificationResultEnum" ;
+    owl:unionOf ( prov:Success prov:Failure prov:PartialSuccess prov:Pending prov:Timeout ) ;
+    skos:definition "Possible verification results" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:Failure,
+        prov:PartialSuccess,
+        prov:Pending,
+        prov:Success,
+        prov:Timeout .
+
+dprc:DisposalMethodEnum a owl:Class ;
+    rdfs:label "DisposalMethodEnum" ;
+    owl:unionOf ( prov:Deletion sec:SecureDeletion dpv:Anonymisation dpv:Pseudonymisation dpv:DataAggregation prov:Archive ) ;
+    skos:definition "Methods for data disposal" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:Archive,
+        prov:Deletion,
+        dpv:Anonymisation,
+        dpv:DataAggregation,
+        dpv:Pseudonymisation,
+        sec:SecureDeletion .
+
+dprc:SignatureAlgorithmEnum a owl:Class ;
+    rdfs:label "SignatureAlgorithmEnum" ;
+    owl:unionOf ( sec:RsaSha256 sec:RsaSha512 sec:EcdsaSha256 sec:EcdsaSha512 sec:Ed25519 sec:RsaPss ) ;
+    skos:definition "Digital signature algorithms supported" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values sec:EcdsaSha256,
+        sec:EcdsaSha512,
+        sec:Ed25519,
+        sec:RsaPss,
+        sec:RsaSha256,
+        sec:RsaSha512 .
+
+dprc:ValidationTypeEnum a owl:Class ;
+    rdfs:label "ValidationTypeEnum" ;
+    owl:unionOf ( prov:SchemaValidation prov:BusinessValidation dpv:ComplianceValidation sec:IntegrityValidation prov:CompletenessValidation prov:ConsistencyValidation ) ;
+    skos:definition "Types of validation that can be performed" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:BusinessValidation,
+        prov:CompletenessValidation,
+        prov:ConsistencyValidation,
+        prov:SchemaValidation,
+        dpv:ComplianceValidation,
+        sec:IntegrityValidation .
+
+dprc:VerificationMethodEnum a owl:Class ;
+    rdfs:label "VerificationMethodEnum" ;
+    owl:unionOf ( sec:Verification prov:ManualValidation prov:AutomatedValidation dprc:BlockchainVerification prov:ExternalValidation dprc:ConsensusVerification ) ;
+    skos:definition "Methods for verifying transfers" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:AutomatedValidation,
+        prov:ExternalValidation,
+        prov:ManualValidation,
+        dprc:BlockchainVerification,
+        dprc:ConsensusVerification,
+        sec:Verification .
+
+dprc:AttestationStandardEnum a owl:Class ;
+    rdfs:label "AttestationStandardEnum" ;
+    owl:unionOf ( dprc:RFC3161 dprc:eIDAS dprc:ETSI cert:X509 dprc:ISO27001 dprc:ANSIX962 vc:VerifiableCredential ) ;
+    skos:definition "Standards for external attestation" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values cert:X509,
+        dprc:ANSIX962,
+        dprc:ETSI,
+        dprc:ISO27001,
+        dprc:RFC3161,
+        dprc:eIDAS,
+        vc:VerifiableCredential .
+
+dprc:CustodianTypeEnum a owl:Class ;
+    rdfs:label "CustodianTypeEnum" ;
+    owl:unionOf ( foaf:Person foaf:Organization prov:SoftwareAgent dpv:Authority dprc:Partner dprc:Vendor dpv:Regulator ) ;
+    skos:definition "Types of custodian entities" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:SoftwareAgent,
+        foaf:Organization,
+        foaf:Person,
+        dprc:Partner,
+        dprc:Vendor,
+        dpv:Authority,
+        dpv:Regulator .
+
+dprc:TransferMethodEnum a owl:Class ;
+    rdfs:label "TransferMethodEnum" ;
+    owl:unionOf ( dcat:DataService prov:ManualActivity prov:Migration dprc:BlockchainTransfer dprc:SmartContractTransfer dprc:EscrowTransfer prov:DirectTransfer ) ;
+    skos:definition "Methods used for custody transfer" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values dcat:DataService,
+        prov:DirectTransfer,
+        prov:ManualActivity,
+        prov:Migration,
+        dprc:BlockchainTransfer,
+        dprc:EscrowTransfer,
+        dprc:SmartContractTransfer .
+
+dprc:ActorRoleEnum a owl:Class ;
+    rdfs:label "ActorRoleEnum" ;
+    owl:unionOf ( prov:Creator prov:Editor prov:Validator prov:Custodian prov:Auditor prov:Observer prov:Administrator dpv:Authority ) ;
+    skos:definition "Roles that actors can have in the custody chain" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values prov:Administrator,
+        prov:Auditor,
+        prov:Creator,
+        prov:Custodian,
+        prov:Editor,
+        prov:Observer,
+        prov:Validator,
+        dpv:Authority .
+
+dprc:BlockchainNetworkEnum a owl:Class ;
+    rdfs:label "BlockchainNetworkEnum" ;
+    owl:unionOf ( dprc:Ethereum dprc:Polygon dprc:Hyperledger dprc:Bitcoin dprc:Avalanche dprc:Hedera dprc:IPFS dprc:Arweave ) ;
+    skos:definition "Supported blockchain networks" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values dprc:Arweave,
+        dprc:Avalanche,
+        dprc:Bitcoin,
+        dprc:Ethereum,
+        dprc:Hedera,
+        dprc:Hyperledger,
+        dprc:IPFS,
+        dprc:Polygon .
+
+dprc:HashAlgorithmEnum a owl:Class ;
+    rdfs:label "HashAlgorithmEnum" ;
+    owl:unionOf ( sec:SHA256 sec:SHA384 sec:SHA512 sec:SHA3_256 sec:SHA3_512 sec:BLAKE2b sec:BLAKE3 ) ;
+    skos:definition "Cryptographic hash algorithms supported" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values sec:BLAKE2b,
+        sec:BLAKE3,
+        sec:SHA256,
+        sec:SHA384,
+        sec:SHA3_256,
+        sec:SHA3_512,
+        sec:SHA512 .
+
+dprc:AuthenticationMethodEnum a owl:Class ;
+    rdfs:label "AuthenticationMethodEnum" ;
+    owl:unionOf ( oidc:Authentication oauth:OAuth2 sec:SAML cert:X509Certificate did:Authentication sec:APIKey sec:JsonWebToken sec:WebAuthn sec:Kerberos ) ;
+    skos:definition "Methods used to authenticate actors" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values oidc:Authentication,
+        cert:X509Certificate,
+        sec:APIKey,
+        sec:JsonWebToken,
+        sec:Kerberos,
+        sec:SAML,
+        sec:WebAuthn,
+        oauth:OAuth2,
+        did:Authentication .
+
+dprc:EventTypeEnum a owl:Class ;
+    rdfs:label "EventTypeEnum" ;
+    owl:unionOf ( prov:Create prov:Modify prov:Delegation prov:Validation dcat:access prov:Archive prov:Invalidation prov:Audit prov:Restoration prov:Migration ) ;
+    skos:definition "Types of custody events that can occur" ;
+    skos:inScheme dprc: ;
+    linkml:permissible_values dcat:access,
+        prov:Archive,
+        prov:Audit,
+        prov:Create,
+        prov:Delegation,
+        prov:Invalidation,
+        prov:Migration,
+        prov:Modify,
+        prov:Restoration,
+        prov:Validation .
+
+

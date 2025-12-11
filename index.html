@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE-RISE DPP Record Custody Data Model</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 2rem;
+        }
+        .description {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .files {
+            list-style: none;
+            padding: 0;
+        }
+        .files li {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+        .files li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .files a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .files a:hover {
+            text-decoration: underline;
+        }
+        .file-description {
+            color: #666;
+            margin-top: 0.3rem;
+            font-size: 0.95rem;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e4e8;
+            text-align: center;
+            color: #666;
+        }
+        .footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>CE-RISE DPP Record Custody Data Model</h1>
+
+    <div class="description">
+        <p>Chain of custody and governance history of DPP records, capturing who did what when. Stage 1 focuses on Custody Events tracking with full audit trail capabilities.
+</p>
+    </div>
+
+    <h2>Generated Schema Files</h2>
+    <ul class="files">
+        <li>
+            <a href="schema.yaml">LinkML YAML Schema</a>
+            <div class="file-description">
+                Canonical LinkML YAML source of the data model
+            </div>
+        </li>
+        <li>
+            <a href="schema.json">JSON Schema</a>
+            <div class="file-description">
+                JSON Schema definition for validating data instances against this model
+            </div>
+        </li>
+        <li>
+            <a href="shacl.ttl">SHACL (Turtle)</a>
+            <div class="file-description">
+                SHACL shapes for RDF validation in Turtle format
+            </div>
+        </li>
+        <li>
+            <a href="model.ttl">OWL Ontology (Turtle)</a>
+            <div class="file-description">
+                OWL ontology representation of the data model in Turtle format
+            </div>
+        </li>
+    </ul>
+
+    <div class="footer">
+        <p>
+            Repository: <a href="https://codeberg.org/CE-RISE-models/dpp-record-custody">https://codeberg.org/CE-RISE-models/dpp-record-custody</a>
+        </p>
+        <p>
+            Generated from LinkML model • Last updated: <script>document.write(new Date().toISOString().split('T')[0])</script>
+        </p>
+    </div>
+</body>
+</html>
