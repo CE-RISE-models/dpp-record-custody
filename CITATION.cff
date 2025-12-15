@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: CE-RISE DPP Record Custody
 message: >-
-  v0.0.1 - Complete implementation of DPP Record Custody model with five stages for tracking who did what when.
+  v0.0.2 - Added refs from Beta data model release.
 type: software
 doi: 10.5281/zenodo.17900533
 authors:
