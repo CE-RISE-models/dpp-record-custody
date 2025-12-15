@@ -1,0 +1,863 @@
+@prefix cert: <http://www.w3.org/ns/auth/cert#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix did: <https://www.w3.org/ns/did#> .
+@prefix dprc: <https://ce-rise-models.codeberg.page/dpp-record-custody/> .
+@prefix dpv: <https://w3id.org/dpv#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix oauth: <https://www.w3.org/ns/auth/oauth#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix oidc: <http://openid.net/specs/openid-connect-core-1_0#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema1: <http://schema.org/> .
+@prefix sec: <https://w3id.org/security#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix vc: <https://www.w3.org/2018/credentials#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dprc:DPPRecordCustody a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """Root class for the chain of custody and governance history of DPP records. Full implementation includes all five stages: Custody Events, Custodian History, Transfer Records, Integrity Evidence, and Governance Actions.
+""" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class prov:Delegation ;
+            sh:description "Historical record of all custodians who have held the DPP record" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path prov:hadDelegate ],
+        [ sh:class prov:Generation ;
+            sh:description "Validation, audit, and disposal records for governance" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 4 ;
+            sh:path prov:qualifiedGeneration ],
+        [ sh:class prov:Activity ;
+            sh:description "Chronological list of all custody-related events" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path prov:hadActivity ],
+        [ sh:class sec:Proof ;
+            sh:description "Cryptographic and external evidence of data integrity" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 3 ;
+            sh:path sec:hasProof ],
+        [ sh:class prov:Influence ;
+            sh:description "Records of all authorized transfers between custodians" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path prov:wasInfluencedBy ] ;
+    sh:targetClass dprc:DPPRecordCustody .
+
+time:Interval a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Time period during which custody was held" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:description "When custody ended (ISO 8601), null if current" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path time:hasEnd ],
+        [ sh:datatype xsd:integer ;
+            sh:description "Calculated duration of custody in days" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path time:hasDurationDescription ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When custody began (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path time:hasBeginning ],
+        [ sh:datatype xsd:boolean ;
+            sh:description "Whether this custodian is currently active" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path dprc:isActive ] ;
+    sh:targetClass time:Interval .
+
+odrl:Agreement a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Authorization and legal basis for custody transfer" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:description "When the authorization expires" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path odrl:dateTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "Party who authorized the transfer (DID or OIDC identifier)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path odrl:assigner ],
+        [ sh:datatype xsd:string ;
+            sh:description "Conditions or restrictions on the transfer" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path odrl:constraint ],
+        [ sh:datatype xsd:anyURI ;
+            sh:description "URI reference to authorization document" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path odrl:source ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for the authorization" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:datatype xsd:string ;
+            sh:description "OAuth2 token or signed JWT for authorization" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path oauth:accessToken ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal basis for transfer (GDPR Article 6/9, contract, consent)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path dpv:hasLegalBasis ] ;
+    sh:targetClass odrl:Agreement .
+
+odrl:Policy a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Responsibilities and permissions held during custody" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "What data the custodian was responsible for" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path odrl:target ],
+        [ sh:datatype xsd:boolean ;
+            sh:description "Whether custodian could delegate to others" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path odrl:delegation ],
+        [ sh:datatype xsd:string ;
+            sh:description "Rights to modify the record" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path odrl:modify ],
+        [ sh:datatype xsd:string ;
+            sh:description "Permissions and access rights during custody" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path odrl:permission ],
+        [ sh:datatype xsd:string ;
+            sh:description "Regulatory and compliance requirements" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path dpv:hasComplianceRequirement ] ;
+    sh:targetClass odrl:Policy .
+
+prov:Generation a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """Governance activities including validations, audits, and disposal actions taken on the DPP record
+""" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class prov:Invalidation ;
+            sh:description "Record of data disposal when applicable" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path prov:qualifiedInvalidation ],
+        [ sh:class prov:Revision ;
+            sh:description "Complete audit trail of governance reviews" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path prov:qualifiedRevision ],
+        [ sh:class prov:Validation ;
+            sh:description "Records of all validation activities" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path prov:qualifiedValidation ] ;
+    sh:targetClass prov:Generation .
+
+prov:Influence a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """Complete record of a custody transfer between parties, including authorization, details, and verification
+""" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class odrl:Agreement ;
+            sh:description "Authorization details for the transfer" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path prov:hadPlan ],
+        [ sh:class prov:Activity ;
+            sh:description "Specific details of the transfer execution" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path prov:qualifiedInfluence ],
+        [ sh:class prov:Validation ;
+            sh:description "Verification that transfer was completed successfully" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path prov:qualifiedAssociation ] ;
+    sh:targetClass prov:Influence .
+
+prov:Plan a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Core identifying and descriptive information about a custody event" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Human-readable description of what happened" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path dcterms:description ],
+        [ sh:datatype xsd:string ;
+            sh:description "Reason or authorization for this event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path prov:hadActivity ],
+        [ sh:datatype xsd:string ;
+            sh:description "System that generated this event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path prov:wasGeneratedBy ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for this custody event" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When the event occurred (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path prov:atTime ],
+        [ sh:description "Type of custody event" ;
+            sh:in ( prov:Create prov:Modify prov:Delegation prov:Validation dcat:access prov:Archive prov:Invalidation prov:Audit prov:Restoration prov:Migration ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:type ] ;
+    sh:targetClass prov:Plan .
+
+prov:Revision a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Record of an audit performed on the DPP custody chain" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:dateTime ;
+            sh:description "When audit was performed (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path prov:atTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "Findings from the audit" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path prov:value ],
+        [ sh:datatype xsd:string ;
+            sh:description "Recommendations from the audit" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path dprc:auditRecommendations ],
+        [ sh:datatype xsd:string ;
+            sh:description "Auditor performing the review" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:wasAssociatedWith ],
+        [ sh:description "Type of audit performed" ;
+            sh:in ( prov:InternalAudit prov:ExternalAudit dpv:RegulatoryAudit sec:SecurityAudit prov:PerformanceAudit ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:type ],
+        [ sh:datatype xsd:string ;
+            sh:description "Compliance status determined by audit" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path dpv:hasComplianceStatus ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for the audit" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ] ;
+    sh:targetClass prov:Revision .
+
+dprc:BlockchainAnchor a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Blockchain-based immutability anchoring" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "W3C DID document for blockchain identity" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path did:didDocument ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When anchored to blockchain (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path prov:atTime ],
+        [ sh:description "Which blockchain network is used" ;
+            sh:in ( dprc:Ethereum dprc:Polygon dprc:Hyperledger dprc:Bitcoin dprc:Avalanche dprc:Hedera dprc:IPFS dprc:Arweave ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path dprc:blockchainNetwork ],
+        [ sh:datatype xsd:string ;
+            sh:description "Transaction hash on the blockchain" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path dprc:transactionHash ],
+        [ sh:datatype xsd:string ;
+            sh:description "Smart contract address if applicable" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path dprc:contractAddress ],
+        [ sh:datatype xsd:integer ;
+            sh:description "Block number containing the transaction" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path dprc:blockNumber ],
+        [ sh:datatype xsd:integer ;
+            sh:description "Number of blockchain confirmations" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path dprc:confirmations ] ;
+    sh:targetClass dprc:BlockchainAnchor .
+
+sec:Digest a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Cryptographic fingerprint of DPP data at a specific point" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "What data is included in the fingerprint" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path dprc:fingerprintScope ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When the fingerprint was created (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:atTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "Canonical form used before hashing" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path dprc:canonicalForm ],
+        [ sh:datatype xsd:string ;
+            sh:description "The hash value of the data" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path sec:digestValue ],
+        [ sh:description "Algorithm used for fingerprinting" ;
+            sh:in ( sec:SHA256 sec:SHA384 sec:SHA512 sec:SHA3_256 sec:SHA3_512 sec:BLAKE2b sec:BLAKE3 ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path sec:digestAlgorithm ] ;
+    sh:targetClass sec:Digest .
+
+prov:Activity a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """A significant action or change in the DPP record's custody chain, capturing who did what, when, and with what authority
+""",
+        "Execution details of the custody transfer" ;
+    sh:ignoredProperties ( rdf:type ),
+        ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for the transfer" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:datatype xsd:string ;
+            sh:description "Reason for the transfer" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path prov:hadActivity ],
+        [ sh:class sec:Proof ;
+            sh:description "Cryptographic integrity information for the event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path sec:proof ],
+        [ sh:class prov:Plan ;
+            sh:description "Core metadata about the custody event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path prov:hadPlan ],
+        [ sh:datatype xsd:string ;
+            sh:description "Custodian transferring custody" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path prov:wasStartedBy ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When the transfer occurred (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path prov:atTime ],
+        [ sh:description "Method used for transfer" ;
+            sh:in ( dcat:DataService prov:ManualActivity prov:Migration dprc:BlockchainTransfer dprc:SmartContractTransfer dprc:EscrowTransfer prov:DirectTransfer ) ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path prov:used ],
+        [ sh:datatype xsd:string ;
+            sh:description "What data was transferred" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path prov:entity ],
+        [ sh:class prov:Agent ;
+            sh:description "The agent who performed this custody event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path prov:wasAssociatedWith ],
+        [ sh:datatype xsd:string ;
+            sh:description "Custodian receiving custody" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:wasEndedBy ] ;
+    sh:targetClass prov:Activity .
+
+prov:Agent a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Complete identification of a custodian entity",
+        "The authenticated agent who performed the custody event" ;
+    sh:ignoredProperties ( rdf:type ),
+        ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Session identifier (JWT jti claim or session ID)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path oidc:jti ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier (DID, OIDC sub, LEI for organizations)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:datatype xsd:string ;
+            sh:description "Decentralized Identifier if applicable" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path did:id ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier (OpenID sub claim, DID, or system ID)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path oidc:sub ],
+        [ sh:datatype xsd:string ;
+            sh:description "Name of the custodian" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path foaf:name ],
+        [ sh:description "Type of custodian entity" ;
+            sh:in ( foaf:Person foaf:Organization prov:SoftwareAgent dpv:Authority dprc:Partner dprc:Vendor dpv:Regulator ) ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:type ],
+        [ sh:datatype xsd:string ;
+            sh:description "User agent string for forensic analysis" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 8 ;
+            sh:path dprc:userAgent ],
+        [ sh:datatype xsd:string ;
+            sh:description "Organization the actor represents (from OIDC org claim or SAML)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path foaf:member ],
+        [ sh:description "Role of the actor in the custody chain" ;
+            sh:in ( prov:Creator prov:Editor prov:Validator prov:Custodian prov:Auditor prov:Observer prov:Administrator dpv:Authority ) ;
+            sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path prov:hadRole ],
+        [ sh:datatype xsd:string ;
+            sh:description "IP address of the actor for audit purposes" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path dprc:ipAddress ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal Entity Identifier if applicable (ISO 17442)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path dprc:legalEntityIdentifier ],
+        [ sh:description "How the actor was authenticated" ;
+            sh:in ( oidc:Authentication oauth:OAuth2 sec:SAML cert:X509Certificate did:Authentication sec:APIKey sec:JsonWebToken sec:WebAuthn sec:Kerberos ) ;
+            sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path sec:authenticationMethod ],
+        [ sh:datatype xsd:string ;
+            sh:description "Security certifications held (ISO 27001, SOC2, etc.)" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path cert:hasCertificate ],
+        [ sh:datatype xsd:string ;
+            sh:description "Contact information (vCard or Schema.org ContactPoint)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path schema1:contactPoint ],
+        [ sh:datatype xsd:string ;
+            sh:description "Legal jurisdiction (ISO 3166 country code)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path dpv:hasJurisdiction ],
+        [ sh:datatype xsd:string ;
+            sh:description "Email address (from OIDC email claim)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path foaf:mbox ],
+        [ sh:datatype xsd:string ;
+            sh:description "Name of the actor (from OIDC name/preferred_username claim)" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path foaf:name ] ;
+    sh:targetClass prov:Agent .
+
+prov:Delegation a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """Record of a specific custodian's period of responsibility for the DPP record, including their identity, custody period, and responsibilities
+""" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class odrl:Policy ;
+            sh:description "Responsibilities and permissions during custody" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path odrl:hasPolicy ],
+        [ sh:class prov:Agent ;
+            sh:description "Full identification details of the custodian" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path prov:agent ],
+        [ sh:class time:Interval ;
+            sh:description "Time period during which this custodian held the record" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path prov:hadActivity ] ;
+    sh:targetClass prov:Delegation .
+
+prov:Invalidation a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Record of DPP data disposal when applicable" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Authorization for disposal" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path prov:hadPlan ],
+        [ sh:datatype xsd:string ;
+            sh:description "Reason for disposal" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path dpv:hasPurpose ],
+        [ sh:datatype xsd:string ;
+            sh:description "Verification that disposal was complete" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:value ],
+        [ sh:datatype xsd:boolean ;
+            sh:description "Whether legal hold was checked" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path dpv:hasLegalBasis ],
+        [ sh:description "Method used for disposal" ;
+            sh:in ( prov:Deletion sec:SecureDeletion dpv:Anonymisation dpv:Pseudonymisation dpv:DataAggregation prov:Archive ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path prov:used ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When disposal occurred (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path prov:atTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "Any data retained despite disposal" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path dprc:retentionException ] ;
+    sh:targetClass prov:Invalidation .
+
+sec:Proof a sh:NodeShape ;
+    sh:closed true ;
+    sh:description """Comprehensive cryptographic and external evidence maintaining the integrity and authenticity of the DPP record
+""",
+        "Cryptographic integrity and chaining information for custody events" ;
+    sh:ignoredProperties ( rdf:type ),
+        ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Hash of the current event data" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path sec:proofValue ],
+        [ sh:description "Algorithm used for digital signature" ;
+            sh:in ( sec:RsaSha256 sec:RsaSha512 sec:EcdsaSha256 sec:EcdsaSha512 sec:Ed25519 sec:RsaPss ) ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path sec:signatureAlgorithm ],
+        [ sh:datatype xsd:string ;
+            sh:description "Hash of the previous event for chain integrity" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path sec:previousProof ],
+        [ sh:class vc:VerifiableCredential ;
+            sh:description "Third-party attestation services" ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path vc:hasCredential ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identifier of the key used for signing" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path sec:verificationMethod ],
+        [ sh:description "Algorithm used for hashing" ;
+            sh:in ( sec:SHA256 sec:SHA384 sec:SHA512 sec:SHA3_256 sec:SHA3_512 sec:BLAKE2b sec:BLAKE3 ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path sec:digestAlgorithm ],
+        [ sh:class dprc:BlockchainAnchor ;
+            sh:description "Optional blockchain anchoring for immutability" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path dprc:hasBlockchainAnchor ],
+        [ sh:class sec:Digest ;
+            sh:description "Cryptographic fingerprint of the data" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path sec:hasDigest ],
+        [ sh:datatype xsd:string ;
+            sh:description "Optional digital signature of the event" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path sec:signatureValue ],
+        [ sh:datatype xsd:string ;
+            sh:description "Nonce value for preventing replay attacks" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path sec:nonce ],
+        [ sh:datatype xsd:string ;
+            sh:description "Merkle tree root if event is part of batch" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 7 ;
+            sh:path dprc:merkleRoot ] ;
+    sh:targetClass sec:Proof .
+
+vc:VerifiableCredential a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Third-party attestation or notarization service" ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for the attestation" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path dcterms:identifier ],
+        [ sh:datatype xsd:string ;
+            sh:description "X.509 cert, VC, or signed statement" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path vc:proof ],
+        [ sh:description "Standard used (eIDAS, ETSI, RFC 3161)" ;
+            sh:in ( dprc:RFC3161 dprc:eIDAS dprc:ETSI cert:X509 dprc:ISO27001 dprc:ANSIX962 vc:VerifiableCredential ) ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path dcterms:conformsTo ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "RFC 3161 timestamp or attestation time" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path vc:issuanceDate ],
+        [ sh:datatype xsd:boolean ;
+            sh:description "Whether attestation can be revoked" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path vc:credentialStatus ],
+        [ sh:datatype xsd:string ;
+            sh:description "Validity period of the attestation" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path vc:expirationDate ],
+        [ sh:datatype xsd:string ;
+            sh:description "Provider of attestation (TSA, notary service, CA)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path vc:issuer ] ;
+    sh:targetClass vc:VerifiableCredential .
+
+prov:Validation a sh:NodeShape ;
+    sh:closed true ;
+    sh:description "Record of a validation performed on the DPP data",
+        "Verification and confirmation of successful transfer" ;
+    sh:ignoredProperties ( rdf:type ),
+        ( rdf:type ) ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:description "Person or system performing validation" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:wasAssociatedWith ],
+        [ sh:datatype xsd:string ;
+            sh:description "Evidence supporting the verification" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 3 ;
+            sh:path prov:value ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When verification was completed" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 1 ;
+            sh:path prov:atTime ],
+        [ sh:datatype xsd:dateTime ;
+            sh:description "When validation was performed (ISO 8601)" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 2 ;
+            sh:path prov:atTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "Unique identifier for the validation" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:description "Type of validation performed" ;
+            sh:in ( prov:SchemaValidation prov:BusinessValidation dpv:ComplianceValidation sec:IntegrityValidation prov:CompletenessValidation prov:ConsistencyValidation ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:type ],
+        [ sh:datatype xsd:string ;
+            sh:description "Identity of the verifying party" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 4 ;
+            sh:path prov:wasAssociatedWith ],
+        [ sh:datatype xsd:string ;
+            sh:description "Schema or rules used for validation" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 6 ;
+            sh:path dcterms:conformsTo ],
+        [ sh:description "Method used to verify the transfer" ;
+            sh:in ( sec:Verification prov:ManualValidation prov:AutomatedValidation dprc:BlockchainVerification prov:ExternalValidation dprc:ConsensusVerification ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path prov:hadPlan ],
+        [ sh:datatype xsd:string ;
+            sh:description "Hash of transferred data for integrity" ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path sec:digestValue ],
+        [ sh:description "Result of the verification" ;
+            sh:in ( prov:Success prov:Failure prov:PartialSuccess prov:Pending prov:Timeout ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path prov:generatedAtTime ],
+        [ sh:description "Result of the validation" ;
+            sh:in ( prov:Pass prov:Fail prov:Warning prov:Skipped ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 4 ;
+            sh:path prov:generatedAtTime ],
+        [ sh:datatype xsd:string ;
+            sh:description "List of errors if validation failed" ;
+            sh:nodeKind sh:Literal ;
+            sh:order 5 ;
+            sh:path dprc:validationErrors ] ;
+    sh:targetClass prov:Validation .
+
+
